@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en" brro-fx--smoothscroll="on">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brro FX — Demo</title>
+  <link rel="stylesheet" href="assets/css/brro-fx.css">
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f0f11;
+      color: #e8e8ea;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+    .section {
+      padding: 8rem 0;
+      border-bottom: 1px solid #1e1e24;
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6c6c80;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+    h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    p  { color: #9898a8; max-width: 55ch; margin-bottom: 1.5rem; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #6366f1;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span { color: #6366f1; }
+    .hero p { font-size: 1.15rem; margin-top: 1.5rem; }
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: #4a4a5a;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── Effect demo containers ── */
+    .demo-row {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+
+    .demo-card {
+      background: #16161d;
+      border: 1px solid #22222e;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .demo-card .badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6c6c80;
+    }
+
+    .demo-card code {
+      font-size: 0.72rem;
+      background: #0a0a10;
+      color: #a5b4fc;
+      border: 1px solid #2a2a38;
+      border-radius: 6px;
+      padding: 0.2em 0.5em;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      text-align: center;
+      word-break: break-all;
+    }
+
+    /* Demo shapes used as effect targets */
+    .shape {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 16px;
+    }
+    .shape-circle {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border-radius: 50%;
+    }
+    .shape-pill {
+      width: 120px;
+      height: 44px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      border-radius: 999px;
+    }
+    .shape-text {
+      font-size: 2.5rem;
+    }
+
+    /* ── Scroll demo wells ── */
+    .scroll-well {
+      position: relative;
+      height: 60vh;
+      min-height: 400px;
+      background: #0c0c12;
+      border: 1px solid #1e1e2a;
+      border-radius: 16px;
+      margin-top: 2.5rem;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scroll-well-inner {
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Stack demo ── */
+    .stack-demo {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
+    .stack-card {
+      flex: 1;
+      min-width: 220px;
+      background: #0c0c12;
+      border: 1px solid #1e1e2a;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .stack-card code {
+      font-size: 0.65rem;
+      background: #0a0a10;
+      color: #a5b4fc;
+      border: 1px solid #2a2a38;
+      border-radius: 6px;
+      padding: 0.3em 0.6em;
+      font-family: monospace;
+      word-break: break-all;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* ── Entrance demo ── */
+    .entrance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    .entrance-card {
+      background: #16161d;
+      border: 1px solid #22222e;
+      border-radius: 10px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .entrance-card .shape { margin: 0 auto; }
+    .entrance-card p {
+      font-size: 0.75rem;
+      margin-top: 1rem;
+      margin-bottom: 0;
+      color: #6c6c80;
+      max-width: none;
+    }
+
+    /* ── Heartbeat demo ── */
+    .heartbeat-row {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 2.5rem;
+    }
+    .heartbeat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .heartbeat-item code {
+      font-size: 0.68rem;
+      background: #0a0a10;
+      color: #a5b4fc;
+      border: 1px solid #2a2a38;
+      border-radius: 6px;
+      padding: 0.25em 0.55em;
+      font-family: monospace;
+      text-align: center;
+      word-break: break-all;
+    }
+
+    /* ── Page scroll demo ── */
+    .page-demo-bar {
+      height: 16px;
+      background: #16161d;
+      border: 1px solid #22222e;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 2.5rem;
+      position: relative;
+    }
+    .page-demo-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 999px;
+      width: calc(var(--brro-progress, 0) * 100%);
+      transition: width 0s; /* instant — progress is set by JS */
+    }
+    .page-demo-text {
+      font-size: 0.85rem;
+      color: #6c6c80;
+      margin-top: 1rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Reference table ── */
+    .ref-section { padding: 6rem 0 10rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin: 2.5rem 0 1rem; color: #c8c8d8; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    th {
+      text-align: left;
+      padding: 0.6rem 1rem;
+      background: #16161d;
+      border-bottom: 2px solid #2a2a38;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6c6c80;
+    }
+    td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid #1a1a24;
+      vertical-align: top;
+    }
+    td code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #a5b4fc;
+      background: #0a0a10;
+      border: 1px solid #22223a;
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+    }
+    tr:hover td { background: #13131a; }
+
+    /* ── Spacer ── */
+    .spacer { height: 200px; }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Brro FX v1.0.0</p>
+      <h1>Motion effects<br>via <span>CSS classes.</span></h1>
+      <p>
+        A lightweight WordPress plugin delivering Elementor-style scroll effects with
+        zero dependencies. Add a class, get an effect. Stack as many as you like.
+      </p>
+    </div>
+    <div class="hero-scroll-hint">↓ scroll to explore</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       VERTICAL SCROLL
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Scroll Effect</span>
+      <h2>Vertical Scroll (Parallax)</h2>
+      <p>
+        The element's Y position is mapped to its progress through the viewport.
+        Combine direction and speed variants to fine-tune the feel.
+      </p>
+
+      <div class="scroll-well">
+        <div class="scroll-well-inner">
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--vertical-scroll"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--vertical-scroll</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">default (direction-up, speed-5)</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--vertical-scroll brro-fx--direction-down brro-fx--speed-3"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--vertical-scroll<br>brro-fx--direction-down<br>brro-fx--speed-3</code>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--vertical-scroll brro-fx--speed-8"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--vertical-scroll<br>brro-fx--speed-8</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">fast / high range</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       HORIZONTAL SCROLL
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Scroll Effect</span>
+      <h2>Horizontal Scroll (Parallax)</h2>
+      <p>
+        Like vertical scroll, but on the X axis. Defaults to moving left;
+        use <code>brro-fx--direction-right</code> to flip.
+      </p>
+
+      <div class="scroll-well">
+        <div class="scroll-well-inner">
+
+          <div style="text-align:center;">
+            <div class="shape-circle brro-fx--horizontal-scroll"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--horizontal-scroll</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">direction-left (default)</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape-circle brro-fx--horizontal-scroll brro-fx--direction-right brro-fx--speed-7"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--horizontal-scroll<br>brro-fx--direction-right<br>brro-fx--speed-7</code>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       FADE
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Scroll Effect</span>
+      <h2>Fade (Opacity Mapping)</h2>
+      <p>
+        Opacity maps to the element's scroll progress. The element fades in as it
+        enters the viewport. Add <code>brro-fx--direction-down</code> to invert
+        (fade out). Use <code>brro-fx--start-*</code> / <code>brro-fx--end-*</code>
+        to lock the fade to a specific portion of the journey.
+      </p>
+
+      <div class="scroll-well">
+        <div class="scroll-well-inner">
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--fade"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--fade</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">fades in as scrolling up</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--fade brro-fx--direction-down"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--fade<br>brro-fx--direction-down</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">fades out</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--fade brro-fx--start-20 brro-fx--end-60"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--fade<br>brro-fx--start-20<br>brro-fx--end-60</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">restricted range (20%→60%)</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       BLUR
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Scroll Effect</span>
+      <h2>Blur (Gaussian Blur Mapping)</h2>
+      <p>
+        The element starts blurred and clears as it rises through the viewport.
+        Speed controls the maximum blur radius (speed 5 → 10 px).
+      </p>
+
+      <div class="scroll-well">
+        <div class="scroll-well-inner">
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--blur"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--blur</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">default (speed-5, 10px max)</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--blur brro-fx--speed-10"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--blur<br>brro-fx--speed-10</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">heavy (20px max)</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       ROTATE
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Scroll Effect</span>
+      <h2>Rotate</h2>
+      <p>
+        The element rotates as it passes through the viewport. At 50% progress
+        (element centre aligned with viewport centre) rotation is 0°.
+        Speed controls the total degree range (speed 5 → ±50°).
+      </p>
+
+      <div class="scroll-well">
+        <div class="scroll-well-inner">
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--rotate"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--rotate</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">clockwise (default)</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--rotate brro-fx--direction-left brro-fx--speed-3"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--rotate<br>brro-fx--direction-left<br>brro-fx--speed-3</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">counter-clockwise, slow</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape-pill brro-fx--rotate brro-fx--speed-8"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--rotate<br>brro-fx--speed-8</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">large range (±80°)</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       STACKING (COMBINED EFFECTS)
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Stacking</span>
+      <h2>Combined Effects</h2>
+      <p>
+        Multiple effects can coexist on the same element. Each writes to its own
+        CSS custom property; a single shared <code>transform</code> / <code>filter</code>
+        / <code>opacity</code> rule combines them — no conflicts.
+      </p>
+
+      <div class="stack-demo">
+
+        <div class="stack-card">
+          <div class="shape brro-fx--vertical-scroll brro-fx--fade brro-fx--speed-4"></div>
+          <code>brro-fx--vertical-scroll<br>brro-fx--fade<br>brro-fx--speed-4</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">parallax + fade-in</small>
+        </div>
+
+        <div class="stack-card">
+          <div class="shape-circle brro-fx--vertical-scroll brro-fx--rotate brro-fx--blur brro-fx--speed-5"></div>
+          <code>brro-fx--vertical-scroll<br>brro-fx--rotate<br>brro-fx--blur<br>brro-fx--speed-5</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">parallax + rotate + blur</small>
+        </div>
+
+        <div class="stack-card">
+          <div class="shape-pill brro-fx--horizontal-scroll brro-fx--fade brro-fx--direction-right brro-fx--speed-6"></div>
+          <code>brro-fx--horizontal-scroll<br>brro-fx--fade<br>brro-fx--direction-right<br>brro-fx--speed-6</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">horizontal + fade-out</small>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       HEARTBEAT
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Loop Animation</span>
+      <h2>Heartbeat</h2>
+      <p>
+        A looping two-pulse scale animation. Pure CSS — no scroll tracking needed.
+        Combine speed and intensity variants freely.
+      </p>
+
+      <div class="heartbeat-row">
+
+        <div class="heartbeat-item">
+          <div class="shape brro-fx--heartbeat"></div>
+          <code>brro-fx--heartbeat</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">default (2s, scale 1.1)</small>
+        </div>
+
+        <div class="heartbeat-item">
+          <div class="shape brro-fx--heartbeat brro-fx--speed-400ms"></div>
+          <code>brro-fx--heartbeat<br>brro-fx--speed-400ms</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">fast pulse</small>
+        </div>
+
+        <div class="heartbeat-item">
+          <div class="shape brro-fx--heartbeat brro-fx--scale-0-8"></div>
+          <code>brro-fx--heartbeat<br>brro-fx--scale-0-8</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">shrink pulse</small>
+        </div>
+
+        <div class="heartbeat-item">
+          <div class="shape brro-fx--heartbeat brro-fx--speed-400ms brro-fx--scale-0-8"></div>
+          <code>brro-fx--heartbeat<br>brro-fx--speed-400ms<br>brro-fx--scale-0-8</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">fast shrink</small>
+        </div>
+
+        <div class="heartbeat-item">
+          <span class="shape-text brro-fx--heartbeat">❤️</span>
+          <code>brro-fx--heartbeat</code>
+          <small style="color:#4a4a5a;font-size:.7rem;">works on any element</small>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       FADE-IN ENTRANCE
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Entrance Animation</span>
+      <h2>Fade In</h2>
+      <p>
+        Triggered once when the element enters the viewport (10% threshold).
+        The <code>brro-fx--is-visible</code> class is added by the engine;
+        the CSS transition does the rest. Scroll back up and these will replay.
+      </p>
+
+      <div class="entrance-grid">
+
+        <div class="entrance-card brro-fx--fade-in">
+          <div class="shape"></div>
+          <p>brro-fx--fade-in</p>
+        </div>
+
+        <div class="entrance-card brro-fx--fade-in" style="transition-delay:.1s">
+          <div class="shape-circle"></div>
+          <p>with delay via inline CSS</p>
+        </div>
+
+        <div class="entrance-card brro-fx--fade-in" style="transition-delay:.2s">
+          <div class="shape-pill"></div>
+          <p>staggered entrance</p>
+        </div>
+
+        <div class="entrance-card brro-fx--fade-in" style="transition-delay:.3s">
+          <div class="shape"></div>
+          <p>staggered entrance</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       PAGE TRACKING
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Page Tracking</span>
+      <h2>brro-fx--page</h2>
+      <p>
+        Add <code>brro-fx--page</code> to any scroll-effect element and progress
+        maps to the full page scroll (0% = page top, 100% = page bottom) instead
+        of the element's own viewport position. The progress bar below uses this.
+      </p>
+
+      <!-- The fill element tracks whole-page scroll -->
+      <div class="page-demo-bar">
+        <div class="page-demo-fill brro-fx--fade brro-fx--page"></div>
+      </div>
+      <p class="page-demo-text">
+        ↑ Width mapped to page scroll progress via
+        <code style="color:#a5b4fc;">brro-fx--fade brro-fx--page</code>
+        (opacity doubles as width here via the CSS variable)
+      </p>
+
+      <div style="margin-top:2.5rem; display:flex; gap:2rem; flex-wrap:wrap; align-items:center;">
+        <div style="text-align:center;">
+          <div class="shape brro-fx--vertical-scroll brro-fx--page brro-fx--speed-6"></div>
+          <br>
+          <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--vertical-scroll brro-fx--page brro-fx--speed-6</code>
+          <br><small style="color:#4a4a5a;font-size:.7rem;">parallax mapped to full page</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       RESPONSIVE DISABLING
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Responsive</span>
+      <h2>Responsive Control</h2>
+      <p>
+        Disable effects below breakpoints to keep mobile layouts clean.
+        Resize this window to see the effect disappear.
+      </p>
+
+      <div class="demo-row">
+
+        <div class="demo-card">
+          <div class="shape brro-fx--vertical-scroll brro-fx--mobile-off"></div>
+          <code>brro-fx--vertical-scroll<br>brro-fx--mobile-off</code>
+          <span class="badge">disabled below 768px</span>
+        </div>
+
+        <div class="demo-card">
+          <div class="shape brro-fx--rotate brro-fx--tablet-off"></div>
+          <code>brro-fx--rotate<br>brro-fx--tablet-off</code>
+          <span class="badge">disabled below 1024px</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       REFERENCE TABLE
+  ════════════════════════════════════════════════════════ -->
+  <section class="ref-section">
+    <div class="container">
+      <span class="section-label">Reference</span>
+      <h2>All Classes</h2>
+
+      <h3>Scroll-Mapped Effects</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Effect</th><th>CSS property set</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--vertical-scroll</code></td><td>Parallax Y offset mapped to viewport progress</td><td><code>--brro-translate-y</code></td></tr>
+          <tr><td><code>brro-fx--horizontal-scroll</code></td><td>Parallax X offset mapped to viewport progress</td><td><code>--brro-translate-x</code></td></tr>
+          <tr><td><code>brro-fx--fade</code></td><td>Opacity mapped to viewport progress</td><td><code>--brro-opacity</code></td></tr>
+          <tr><td><code>brro-fx--blur</code></td><td>Gaussian blur mapped to viewport progress (clears as it rises)</td><td><code>--brro-blur</code></td></tr>
+          <tr><td><code>brro-fx--rotate</code></td><td>Rotation mapped to viewport progress (0° at centre)</td><td><code>--brro-rotate</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Progress Source</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--page</code></td><td>Use full-page scroll position instead of element's viewport position</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Direction Variants</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Applies to</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--direction-up</code></td><td>vertical-scroll</td><td>Default — element drifts upward as you scroll down</td></tr>
+          <tr><td><code>brro-fx--direction-down</code></td><td>vertical-scroll, fade</td><td>Invert: drift down / fade out</td></tr>
+          <tr><td><code>brro-fx--direction-left</code></td><td>horizontal-scroll, rotate</td><td>Default for H-scroll; counter-clockwise for rotate</td></tr>
+          <tr><td><code>brro-fx--direction-right</code></td><td>horizontal-scroll</td><td>Drift right as you scroll down</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Speed &amp; Range</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Effect</th><th>Examples</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--speed-{1–10}</code></td><td>Controls effect magnitude for scroll effects. Default: 5.</td><td>vertical: ±<em>N</em>×20 px, blur: <em>N</em>×2 px max, rotate: ±<em>N</em>×10°</td></tr>
+          <tr><td><code>brro-fx--start-{0–100}</code></td><td>Progress % at which animation begins. Default: 0.</td><td><code>brro-fx--start-20</code> → effect starts at 20% progress</td></tr>
+          <tr><td><code>brro-fx--end-{0–100}</code></td><td>Progress % at which animation completes. Default: 100.</td><td><code>brro-fx--end-70</code> → fully animated by 70% progress</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Smooth Scroll</h3>
+      <table>
+        <thead>
+          <tr><th>Attribute</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;html brro-fx--smoothscroll="on"&gt;</code></td>
+            <td>
+              Enables lerp-based smooth scroll (easing factor 0.1) for wheel events.
+              Automatically skipped when <code>prefers-reduced-motion</code> is set.
+              Keyboard, scrollbar, and anchor-link scrolls pass through as native.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Responsive Control</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--mobile-off</code></td><td>Disables all scroll effects at viewport width &lt; 768 px</td></tr>
+          <tr><td><code>brro-fx--tablet-off</code></td><td>Disables all scroll effects at viewport width &lt; 1024 px</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Entrance Animation</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--fade-in</code></td><td>Fades + slides up once when element enters viewport (10% threshold). Use CSS <code>transition-delay</code> for staggering.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Loop: Heartbeat</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--heartbeat</code></td><td>Double-pulse scale animation, loops indefinitely</td></tr>
+          <tr><td><code>brro-fx--speed-2s</code></td><td>Heartbeat duration 2 s (default)</td></tr>
+          <tr><td><code>brro-fx--speed-400ms</code></td><td>Heartbeat duration 400 ms (fast)</td></tr>
+          <tr><td><code>brro-fx--scale-1-1</code></td><td>Scale peak 1.1 — grow pulse (default)</td></tr>
+          <tr><td><code>brro-fx--scale-0-8</code></td><td>Scale peak 0.8 — shrink pulse</td></tr>
+        </tbody>
+      </table>
+
+      <h3>CSS Custom Properties (read-only — set by JS)</h3>
+      <table>
+        <thead>
+          <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--brro-progress</code></td><td>n/a</td><td>Raw 0–1 scroll progress (useful for custom CSS rules)</td></tr>
+          <tr><td><code>--brro-translate-x</code></td><td><code>0px</code></td><td>Horizontal offset</td></tr>
+          <tr><td><code>--brro-translate-y</code></td><td><code>0px</code></td><td>Vertical offset</td></tr>
+          <tr><td><code>--brro-rotate</code></td><td><code>0deg</code></td><td>Rotation angle</td></tr>
+          <tr><td><code>--brro-blur</code></td><td><code>0px</code></td><td>Blur radius</td></tr>
+          <tr><td><code>--brro-opacity</code></td><td><code>1</code></td><td>Opacity value</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Stacking Example</h3>
+      <p style="margin-top:1rem;">Any number of scroll effects can be combined on one element:</p>
+      <pre style="background:#0a0a10;border:1px solid #22223a;border-radius:8px;padding:1.25rem;font-size:.82rem;color:#a5b4fc;font-family:monospace;overflow-x:auto;margin-top:.5rem;">&lt;div class="brro-fx--vertical-scroll
+             brro-fx--fade
+             brro-fx--blur
+             brro-fx--speed-4
+             brro-fx--start-10
+             brro-fx--end-80"&gt;
+  All three effects, restricted to the 10%–80% progress window.
+&lt;/div&gt;</pre>
+    </div>
+  </section>
+
+  <div class="spacer"></div>
+
+  <script src="assets/js/lenis.min.js"></script>
+  <script src="assets/js/brro-fx.js"></script>
+
+  <script>
+    /* Demo-only: show --brro-progress value live for the page bar */
+    (function () {
+      var fill = document.querySelector('.page-demo-fill');
+      if (!fill) return;
+      var text = document.querySelector('.page-demo-text');
+      function tick() {
+        var p = parseFloat(fill.style.getPropertyValue('--brro-progress') || 0);
+        if (text) text.childNodes[0].textContent = '↑ Page scroll progress: ' + Math.round(p * 100) + '% — ';
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+  </script>
+</body>
+</html>

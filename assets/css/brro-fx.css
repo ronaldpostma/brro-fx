@@ -1,0 +1,85 @@
+/* =============================================================================
+   Brro FX — Motion Effects CSS
+   Version: 1.0.0
+   Author:  Ronald Postma (Brro) & Claude (Anthropic)
+   License: GPL-2.0-or-later
+   =============================================================================
+
+   STACKING STRATEGY
+   Every scroll-mapped effect writes to its own CSS custom property:
+     --brro-translate-x  (horizontal-scroll)
+     --brro-translate-y  (vertical-scroll)
+     --brro-rotate       (rotate)
+     --brro-blur         (blur)
+     --brro-opacity      (fade)
+   A single shared rule combines them all, so multiple effects on one element
+   compose automatically without specificity conflicts.
+   ============================================================================= */
+
+
+/* ── Scroll-mapped effects base ────────────────────────────────────────────── */
+
+.brro-fx--vertical-scroll,
+.brro-fx--horizontal-scroll,
+.brro-fx--fade,
+.brro-fx--blur,
+.brro-fx--rotate {
+  will-change: transform, opacity, filter;
+  transform:
+    translateX(var(--brro-translate-x, 0px))
+    translateY(var(--brro-translate-y, 0px))
+    rotate(var(--brro-rotate, 0deg));
+  filter:  blur(var(--brro-blur, 0px));
+  opacity: var(--brro-opacity, 1);
+}
+
+
+/* ── Entrance: Fade In ─────────────────────────────────────────────────────── */
+
+.brro-fx--fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+  will-change: opacity, transform;
+}
+
+.brro-fx--fade-in.brro-fx--is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ── Loop: Heartbeat keyframes ─────────────────────────────────────────────── */
+
+@keyframes brro-heartbeat-1-1 {
+  0%,  100% { transform: scale(1);   }
+  14%        { transform: scale(1.1); }
+  28%        { transform: scale(1);   }
+  42%        { transform: scale(1.1); }
+  70%        { transform: scale(1);   }
+}
+
+@keyframes brro-heartbeat-0-8 {
+  0%,  100% { transform: scale(1);   }
+  14%        { transform: scale(0.8); }
+  28%        { transform: scale(1);   }
+  42%        { transform: scale(0.8); }
+  70%        { transform: scale(1);   }
+}
+
+
+/* ── Loop: Heartbeat base ──────────────────────────────────────────────────── */
+
+.brro-fx--heartbeat {
+  display: inline-block; /* transform needs a block formatting context */
+  animation: brro-heartbeat-1-1 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Speed variants */
+.brro-fx--heartbeat.brro-fx--speed-2s    { animation-duration: 2s;    }
+.brro-fx--heartbeat.brro-fx--speed-400ms { animation-duration: 400ms; }
+
+/* Intensity variants */
+.brro-fx--heartbeat.brro-fx--scale-1-1 { animation-name: brro-heartbeat-1-1; }
+.brro-fx--heartbeat.brro-fx--scale-0-8 { animation-name: brro-heartbeat-0-8; }
