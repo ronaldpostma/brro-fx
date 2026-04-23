@@ -38,15 +38,49 @@
 
 .brro-fx--fade-in {
   opacity: 0;
+  transition: opacity 0.65s ease;
+  will-change: opacity;
+}
+
+.brro-fx--fade-in.brro-fx--is-visible {
+  opacity: 1;
+}
+
+/* ── Entrance: Fade In Up (legacy brro-fx--fade-in behavior) ──────────────── */
+
+.brro-fx--fade-in-up {
+  opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.65s ease, transform 0.65s ease;
   will-change: opacity, transform;
 }
 
-.brro-fx--fade-in.brro-fx--is-visible {
+.brro-fx--fade-in-up.brro-fx--is-visible {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── Delay utilities (ms) ─────────────────────────────────────────────────── */
+/*
+  For CSS animations/transitions only (entrance + heartbeat etc).
+  Not used by scroll-mapped effects (those are updated per-frame via JS).
+*/
+
+.brro-fx--delay-100  { transition-delay: 100ms;  animation-delay: 100ms; }
+.brro-fx--delay-200  { transition-delay: 200ms;  animation-delay: 200ms; }
+.brro-fx--delay-300  { transition-delay: 300ms;  animation-delay: 300ms; }
+.brro-fx--delay-400  { transition-delay: 400ms;  animation-delay: 400ms; }
+.brro-fx--delay-500  { transition-delay: 500ms;  animation-delay: 500ms; }
+.brro-fx--delay-600  { transition-delay: 600ms;  animation-delay: 600ms; }
+.brro-fx--delay-700  { transition-delay: 700ms;  animation-delay: 700ms; }
+.brro-fx--delay-800  { transition-delay: 800ms;  animation-delay: 800ms; }
+.brro-fx--delay-900  { transition-delay: 900ms;  animation-delay: 900ms; }
+.brro-fx--delay-1000 { transition-delay: 1000ms; animation-delay: 1000ms; }
+.brro-fx--delay-1100 { transition-delay: 1100ms; animation-delay: 1100ms; }
+.brro-fx--delay-1200 { transition-delay: 1200ms; animation-delay: 1200ms; }
+.brro-fx--delay-1300 { transition-delay: 1300ms; animation-delay: 1300ms; }
+.brro-fx--delay-1400 { transition-delay: 1400ms; animation-delay: 1400ms; }
+.brro-fx--delay-1500 { transition-delay: 1500ms; animation-delay: 1500ms; }
 
 
 /* ── Loop: Heartbeat keyframes ─────────────────────────────────────────────── */

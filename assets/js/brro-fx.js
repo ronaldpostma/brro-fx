@@ -233,7 +233,7 @@
         }
       }
 
-      if (el.classList.contains('brro-fx--fade-in')) {
+      if (el.classList.contains('brro-fx--fade-in') || el.classList.contains('brro-fx--fade-in-up')) {
         entranceObserver.observe(el);
       }
     });

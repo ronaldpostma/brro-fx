@@ -312,7 +312,7 @@
   <!-- ════════════════════════════════════════════════════════
        HERO
   ════════════════════════════════════════════════════════ -->
-  <section class="hero">
+  <section class="hero brro-fx--fade-in">
     <div class="container">
       <p class="hero-eyebrow">Brro FX v1.0.0</p>
       <h1>Motion effects<br>via <span>CSS classes.</span></h1>
@@ -619,27 +619,27 @@
       <p>
         Triggered once when the element enters the viewport (10% threshold).
         The <code>brro-fx--is-visible</code> class is added by the engine;
-        the CSS transition does the rest. Scroll back up and these will replay.
+        the CSS transition does the rest. This triggers once per page load (it does not replay on scroll back up).
       </p>
 
       <div class="entrance-grid">
 
-        <div class="entrance-card brro-fx--fade-in">
+        <div class="entrance-card brro-fx--fade-in-up">
           <div class="shape"></div>
-          <p>brro-fx--fade-in</p>
+          <p>brro-fx--fade-in-up</p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in" style="transition-delay:.1s">
+        <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-100">
           <div class="shape-circle"></div>
-          <p>with delay via inline CSS</p>
+          <p>with delay via class</p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in" style="transition-delay:.2s">
+        <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-200">
           <div class="shape-pill"></div>
           <p>staggered entrance</p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in" style="transition-delay:.3s">
+        <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-300">
           <div class="shape"></div>
           <p>staggered entrance</p>
         </div>
@@ -806,7 +806,8 @@
           <tr><th>Class</th><th>Effect</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>brro-fx--fade-in</code></td><td>Fades + slides up once when element enters viewport (10% threshold). Use CSS <code>transition-delay</code> for staggering.</td></tr>
+          <tr><td><code>brro-fx--fade-in</code></td><td>Fades in once when element enters viewport (10% threshold). Use CSS <code>transition-delay</code> for staggering.</td></tr>
+          <tr><td><code>brro-fx--fade-in-up</code></td><td>Fades + slides up once when element enters viewport (10% threshold). Use CSS <code>transition-delay</code> for staggering.</td></tr>
         </tbody>
       </table>
 
