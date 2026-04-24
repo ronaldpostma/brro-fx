@@ -60,6 +60,47 @@
   transform: translateY(0);
 }
 
+/* ── Loop: Heartbeat keyframes ─────────────────────────────────────────────── */
+
+@keyframes brro-fx--heartbeat {
+  0%, 100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: var(--brro-fx--scale);
+  }
+}
+
+
+/* ── Loop: Heartbeat base ──────────────────────────────────────────────────── */
+
+.brro-fx--heartbeat {
+  display: inline-block; /* transform needs a block formatting context */
+  animation: brro-fx--heartbeat 4000ms ease-in-out infinite;
+  will-change: transform;
+  --brro-fx--scale: scale(.95, .95);
+}
+
+/* ── Duration utilities (animations & transitions) ─────────────────────────────
+   Must load AFTER .brro-fx--heartbeat (and after fade-in / fade-in-up shorthands).
+   Same specificity as those rules: later longhands override duration embedded in
+   animation / transition shorthands — no !important needed.
+*/
+
+.brro-fx--duration-400ms  { animation-duration: 400ms;  transition-duration: 400ms;  }
+.brro-fx--duration-600ms  { animation-duration: 600ms;  transition-duration: 600ms;  }
+.brro-fx--duration-800ms  { animation-duration: 800ms;  transition-duration: 800ms;  }
+.brro-fx--duration-1000ms { animation-duration: 1000ms; transition-duration: 1000ms; }
+.brro-fx--duration-1200ms { animation-duration: 1200ms; transition-duration: 1200ms; }
+.brro-fx--duration-1400ms { animation-duration: 1400ms; transition-duration: 1400ms; }
+.brro-fx--duration-1600ms { animation-duration: 1600ms; transition-duration: 1600ms; }
+.brro-fx--duration-2000ms { animation-duration: 2000ms; transition-duration: 2000ms; }
+.brro-fx--duration-2400ms { animation-duration: 2400ms; transition-duration: 2400ms; }
+.brro-fx--duration-2800ms { animation-duration: 2800ms; transition-duration: 2800ms; }
+.brro-fx--duration-3200ms { animation-duration: 3200ms; transition-duration: 3200ms; }
+.brro-fx--duration-3600ms { animation-duration: 3600ms; transition-duration: 3600ms; }
+.brro-fx--duration-4000ms { animation-duration: 4000ms; transition-duration: 4000ms; }
+
 /* ── Delay utilities (ms) ─────────────────────────────────────────────────── */
 /*
   For CSS animations/transitions only (entrance + heartbeat etc).
@@ -82,38 +123,16 @@
 .brro-fx--delay-1400 { transition-delay: 1400ms; animation-delay: 1400ms; }
 .brro-fx--delay-1500 { transition-delay: 1500ms; animation-delay: 1500ms; }
 
-
-/* ── Loop: Heartbeat keyframes ─────────────────────────────────────────────── */
-
-@keyframes brro-heartbeat-1-1 {
-  0%,  100% { transform: scale(1);   }
-  14%        { transform: scale(1.1); }
-  28%        { transform: scale(1);   }
-  42%        { transform: scale(1.1); }
-  70%        { transform: scale(1);   }
-}
-
-@keyframes brro-heartbeat-0-8 {
-  0%,  100% { transform: scale(1);   }
-  14%        { transform: scale(0.8); }
-  28%        { transform: scale(1);   }
-  42%        { transform: scale(0.8); }
-  70%        { transform: scale(1);   }
-}
-
-
-/* ── Loop: Heartbeat base ──────────────────────────────────────────────────── */
-
-.brro-fx--heartbeat {
-  display: inline-block; /* transform needs a block formatting context */
-  animation: brro-heartbeat-1-1 2s ease-in-out infinite;
-  will-change: transform;
-}
-
-/* Speed variants */
-.brro-fx--heartbeat.brro-fx--speed-2s    { animation-duration: 2s;    }
-.brro-fx--heartbeat.brro-fx--speed-400ms { animation-duration: 400ms; }
-
-/* Intensity variants */
-.brro-fx--heartbeat.brro-fx--scale-1-1 { animation-name: brro-heartbeat-1-1; }
-.brro-fx--heartbeat.brro-fx--scale-0-8 { animation-name: brro-heartbeat-0-8; }
+/* Scaling variants */
+/* Shrink */
+.brro-fx--scale-0-5 { --brro-fx--scale: scale(.5, .5); }
+.brro-fx--scale-0-6 { --brro-fx--scale: scale(.6, .6); }
+.brro-fx--scale-0-7 { --brro-fx--scale: scale(.7, .7); }
+.brro-fx--scale-0-8 { --brro-fx--scale: scale(.8, .8); }
+.brro-fx--scale-0-9 { --brro-fx--scale: scale(.9, .9); }
+/* Grow */
+.brro-fx--scale-1-1 { --brro-fx--scale: scale(1.1, 1.1); }
+.brro-fx--scale-1-2 { --brro-fx--scale: scale(1.2, 1.2); }
+.brro-fx--scale-1-3 { --brro-fx--scale: scale(1.3, 1.3); }
+.brro-fx--scale-1-4 { --brro-fx--scale: scale(1.4, 1.4); }
+.brro-fx--scale-1-5 { --brro-fx--scale: scale(1.5, 1.5); }
