@@ -590,7 +590,7 @@
       <p>
         Looping scale pulse: <code>scale(1)</code> at the start/end of each cycle and
         <code>var(--brro-fx--scale)</code> at the midpoint (default <code>0.95</code> — gentle shrink).
-        Pure CSS — no scroll tracking. Add <code>brro-fx--duration-*ms</code> for cycle length and
+        Pure CSS — no scroll tracking. Add <code>brro-fx--duration-*</code> (numeric, e.g. <code>brro-fx--duration-400</code>) for cycle length and
         <code>brro-fx--scale-*</code> for the midpoint scale.
       </p>
 
@@ -603,8 +603,8 @@
         </div>
 
         <div class="heartbeat-item">
-          <div class="shape brro-fx--heartbeat brro-fx--duration-400ms"></div>
-          <code>brro-fx--heartbeat<br>brro-fx--duration-400ms</code>
+          <div class="shape brro-fx--heartbeat brro-fx--duration-400"></div>
+          <code>brro-fx--heartbeat<br>brro-fx--duration-400</code>
           <small style="color:#4a4a5a;font-size:.7rem;">faster cycle</small>
         </div>
 
@@ -683,7 +683,7 @@
         The <code>brro-fx--is-visible</code> class is added by the engine;
         the CSS transition does the rest. This triggers once per page load (it does not replay on scroll back up).
         Two variants: <code>brro-fx--fade-in</code> (opacity) and <code>brro-fx--fade-in-up</code> (opacity + 24px slide-up).
-        Optional: <code>brro-fx--delay-*</code> and <code>brro-fx--duration-*ms</code> (defaults are 0.65 s per property).
+        Optional: <code>brro-fx--delay-*</code> and <code>brro-fx--duration-*</code> (defaults are 0.65 s per property).
       </p>
 
       <div class="entrance-grid">
@@ -703,19 +703,19 @@
           <p><code style="font-size:.7rem;">brro-fx--delay-200</code></p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in-up brro-fx--duration-2000ms">
+        <div class="entrance-card brro-fx--fade-in-up brro-fx--duration-2000">
           <div class="shape"></div>
-          <p><code style="font-size:.7rem;">brro-fx--duration-2000ms</code><br><small style="color:#4a4a5a;">slower fade</small></p>
+          <p><code style="font-size:.7rem;">brro-fx--duration-2000</code><br><small style="color:#4a4a5a;">slower fade</small></p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in brro-fx--duration-800ms brro-fx--delay-400">
+        <div class="entrance-card brro-fx--fade-in brro-fx--duration-800 brro-fx--delay-400">
           <div class="shape-circle"></div>
-          <p><code style="font-size:.65rem;">duration-800ms + delay-400</code></p>
+          <p><code style="font-size:.65rem;">duration-800 + delay-400</code></p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in-up brro-fx--duration-1200ms brro-fx--delay-300">
+        <div class="entrance-card brro-fx--fade-in-up brro-fx--duration-1200 brro-fx--delay-300">
           <div class="shape-pill"></div>
-          <p><code style="font-size:.65rem;">duration-1200ms + delay-300</code></p>
+          <p><code style="font-size:.65rem;">duration-1200 + delay-300</code></p>
         </div>
 
       </div>
@@ -840,7 +840,7 @@
           <tr><th>Class</th><th>Effect</th><th>Examples</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>brro-fx--speed-{1–10}</code></td><td>Scroll effect magnitude only (digits-only class names, parsed by JS). Default: 5. Not the same as <code>brro-fx--duration-*ms</code> below.</td><td>vertical: ±<em>N</em>×20 px, blur: <em>N</em>×2 px max, rotate: ±<em>N</em>×10°</td></tr>
+          <tr><td><code>brro-fx--speed-{1–10}</code></td><td>Scroll effect magnitude only (digits-only class names, parsed by JS). Default: 5. Not the same as <code>brro-fx--duration-*</code> below.</td><td>vertical: ±<em>N</em>×20 px, blur: <em>N</em>×2 px max, rotate: ±<em>N</em>×10°</td></tr>
           <tr><td><code>brro-fx--start-{0–100}</code></td><td>Progress % at which animation begins. Default: 0.</td><td><code>brro-fx--start-20</code> → effect starts at 20% progress</td></tr>
           <tr><td><code>brro-fx--end-{0–100}</code></td><td>Progress % at which animation completes. Default: 100.</td><td><code>brro-fx--end-70</code> → fully animated by 70% progress</td></tr>
         </tbody>
@@ -881,8 +881,8 @@
           <tr><th>Class</th><th>Effect</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>brro-fx--fade-in</code></td><td>Fades in (opacity 0 → 1) once when element enters viewport (10% threshold). Combine with <code>brro-fx--delay-*</code> and/or <code>brro-fx--duration-*ms</code> for timing.</td></tr>
-          <tr><td><code>brro-fx--fade-in-up</code></td><td>Fades + slides up (24 px) once when element enters viewport (10% threshold). Combine with <code>brro-fx--delay-*</code> and/or <code>brro-fx--duration-*ms</code> for timing.</td></tr>
+          <tr><td><code>brro-fx--fade-in</code></td><td>Fades in (opacity 0 → 1) once when element enters viewport (10% threshold). Combine with <code>brro-fx--delay-*</code> and/or <code>brro-fx--duration-*</code> for timing.</td></tr>
+          <tr><td><code>brro-fx--fade-in-up</code></td><td>Fades + slides up (24 px) once when element enters viewport (10% threshold). Combine with <code>brro-fx--delay-*</code> and/or <code>brro-fx--duration-*</code> for timing.</td></tr>
         </tbody>
       </table>
 
@@ -890,7 +890,7 @@
       <p style="margin-top:.5rem;">
         Apply both <code>transition-delay</code> and <code>animation-delay</code>. Works with the
         entrance animations (<code>fade-in</code>, <code>fade-in-up</code>), heartbeat, and other animations.
-        Pair with <code>brro-fx--duration-*ms</code> to set how long each transition/animation cycle runs.
+        Pair with <code>brro-fx--duration-*</code> to set how long each transition/animation cycle runs.
         Not applied to scroll-mapped effects (those are driven per-frame by JS).
       </p>
       <table>
@@ -916,10 +916,11 @@
         </tbody>
       </table>
 
-      <h3>Duration utilities (<code>brro-fx--duration-*ms</code>)</h3>
+      <h3>Duration utilities (<code>brro-fx--duration-*</code>)</h3>
       <p style="margin-top:.5rem;">
-        Generic <code>animation-duration</code> and <code>transition-duration</code>. The <code>ms</code> suffix
-        and <code>duration-</code> prefix keep these separate from scroll <code>brro-fx--speed-{1–10}</code> (JS only reads digit-only speed classes).
+        Generic <code>animation-duration</code> and <code>transition-duration</code>. Class names use a numeric suffix only
+        (e.g. <code>brro-fx--duration-800</code> = 800 ms) — no <code>ms</code> in the selector — to keep them distinct from scroll
+        <code>brro-fx--speed-{1–10}</code> (JS only reads digit-only speed classes).
         In this plugin’s CSS, these rules are declared <strong>after</strong> <code>brro-fx--heartbeat</code> and the fade-in shorthands so the longhands win the cascade (same class specificity — order matters; no <code>!important</code>).
         Default heartbeat cycle is 4000 ms; add any row below to shorten or lengthen it (or time fade-in / custom CSS).
       </p>
@@ -928,19 +929,19 @@
           <tr><th>Class</th><th>Duration</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>brro-fx--duration-400ms</code></td><td>400 ms</td></tr>
-          <tr><td><code>brro-fx--duration-600ms</code></td><td>600 ms</td></tr>
-          <tr><td><code>brro-fx--duration-800ms</code></td><td>800 ms</td></tr>
-          <tr><td><code>brro-fx--duration-1000ms</code></td><td>1000 ms</td></tr>
-          <tr><td><code>brro-fx--duration-1200ms</code></td><td>1200 ms</td></tr>
-          <tr><td><code>brro-fx--duration-1400ms</code></td><td>1400 ms</td></tr>
-          <tr><td><code>brro-fx--duration-1600ms</code></td><td>1600 ms</td></tr>
-          <tr><td><code>brro-fx--duration-2000ms</code></td><td>2000 ms</td></tr>
-          <tr><td><code>brro-fx--duration-2400ms</code></td><td>2400 ms</td></tr>
-          <tr><td><code>brro-fx--duration-2800ms</code></td><td>2800 ms</td></tr>
-          <tr><td><code>brro-fx--duration-3200ms</code></td><td>3200 ms</td></tr>
-          <tr><td><code>brro-fx--duration-3600ms</code></td><td>3600 ms</td></tr>
-          <tr><td><code>brro-fx--duration-4000ms</code></td><td>4000 ms (matches heartbeat default)</td></tr>
+          <tr><td><code>brro-fx--duration-400</code></td><td>400 ms</td></tr>
+          <tr><td><code>brro-fx--duration-600</code></td><td>600 ms</td></tr>
+          <tr><td><code>brro-fx--duration-800</code></td><td>800 ms</td></tr>
+          <tr><td><code>brro-fx--duration-1000</code></td><td>1000 ms</td></tr>
+          <tr><td><code>brro-fx--duration-1200</code></td><td>1200 ms</td></tr>
+          <tr><td><code>brro-fx--duration-1400</code></td><td>1400 ms</td></tr>
+          <tr><td><code>brro-fx--duration-1600</code></td><td>1600 ms</td></tr>
+          <tr><td><code>brro-fx--duration-2000</code></td><td>2000 ms</td></tr>
+          <tr><td><code>brro-fx--duration-2400</code></td><td>2400 ms</td></tr>
+          <tr><td><code>brro-fx--duration-2800</code></td><td>2800 ms</td></tr>
+          <tr><td><code>brro-fx--duration-3200</code></td><td>3200 ms</td></tr>
+          <tr><td><code>brro-fx--duration-3600</code></td><td>3600 ms</td></tr>
+          <tr><td><code>brro-fx--duration-4000</code></td><td>4000 ms (matches heartbeat default)</td></tr>
         </tbody>
       </table>
 
@@ -950,7 +951,7 @@
           <tr><th>Class</th><th>Effect</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>brro-fx--heartbeat</code></td><td>Loops a scale pulse: <code>transform: scale(1)</code> at 0%/100%, <code>transform: var(--brro-fx--scale)</code> at 50%. Default cycle: 4000 ms; default midpoint: <code>scale(.95,.95)</code>. Override timing with <code>brro-fx--duration-*ms</code> and midpoint with <code>brro-fx--scale-*</code> below.</td></tr>
+          <tr><td><code>brro-fx--heartbeat</code></td><td>Loops a scale pulse: <code>transform: scale(1)</code> at 0%/100%, <code>transform: var(--brro-fx--scale)</code> at 50%. Default cycle: 4000 ms; default midpoint: <code>scale(.95,.95)</code>. Override timing with <code>brro-fx--duration-*</code> and midpoint with <code>brro-fx--scale-*</code> below.</td></tr>
         </tbody>
       </table>
 

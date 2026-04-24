@@ -38,7 +38,7 @@
 2. **Entrance (one-shot):** `brro-fx--fade-in`, `brro-fx--fade-in-up`  
    - `IntersectionObserver` (threshold 0.1) adds `brro-fx--is-visible` once, then unobserves. **Does not re-run** when scrolling back.
 
-3. **Loop (CSS-only):** `brro-fx--heartbeat` + optional `brro-fx--duration-*ms`, `brro-fx--scale-*` — no scroll JS.
+3. **Loop (CSS-only):** `brro-fx--heartbeat` + optional `brro-fx--duration-*` (numeric only, e.g. `brro-fx--duration-800` = 800 ms), `brro-fx--scale-*` — no scroll JS.
 
 4. **Smooth scroll:** attribute on **`<html>`** — not a class: `brro-fx--smoothscroll="on"`. Initializes **Lenis**; skipped if `prefers-reduced-motion: reduce`.
 
@@ -52,7 +52,7 @@ Use this block for quick lookup, code generation, or validation.
 
 ```json
 {
-  "brro_fx_reference_version": 1,
+  "brro_fx_reference_version": 2,
   "categories": {
     "scroll_effects": {
       "description": "Require brro-fx.js; map scroll progress to CSS variables.",
@@ -108,10 +108,9 @@ Use this block for quick lookup, code generation, or validation.
       }
     },
     "timing_utilities": {
-      "duration_classes_ms": [400, 600, 800, 1000, 1200, 1400, 1600, 2000, 2400, 2800, 3200, 3600, 4000],
-      "duration_prefix": "brro-fx--duration-",
-      "duration_suffix": "ms",
-      "note": "Sets both animation-duration and transition-duration. Not the same as brro-fx--speed-N."
+      "duration_ms_values": [400, 600, 800, 1000, 1200, 1400, 1600, 2000, 2400, 2800, 3200, 3600, 4000],
+      "duration_class_pattern": "brro-fx--duration-{ms}",
+      "note": "Class name uses the number only (no ms suffix). Sets animation-duration and transition-duration. Not the same as brro-fx--speed-N."
     },
     "delay_ms": {
       "classes": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500],
@@ -207,8 +206,11 @@ Use this block for quick lookup, code generation, or validation.
 
 | Pattern | Role |
 |---------|------|
-| `brro-fx--duration-400ms` … `brro-fx--duration-4000ms` | `animation-duration` + `transition-duration` (see CSS file for exact set) |
+| `brro-fx--duration-400` … `brro-fx--duration-4000` | `animation-duration` + `transition-duration` (see exact list below; the **number in the class name** is the duration in ms — **no** literal `ms` suffix in the class) |
 | `brro-fx--delay-100` … `brro-fx--delay-1500` | `animation-delay` + `transition-delay` — **not** for scroll-mapped (JS drives those) |
+
+**Duration classes (must match `assets/css/brro-fx.css` exactly):**  
+`brro-fx--duration-400` · `brro-fx--duration-600` · `brro-fx--duration-800` · `brro-fx--duration-1000` · `brro-fx--duration-1200` · `brro-fx--duration-1400` · `brro-fx--duration-1600` · `brro-fx--duration-2000` · `brro-fx--duration-2400` · `brro-fx--duration-2800` · `brro-fx--duration-3200` · `brro-fx--duration-3600` · `brro-fx--duration-4000`
 
 ### Document attribute (not a class)
 
