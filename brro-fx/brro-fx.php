@@ -3,7 +3,7 @@
  * Plugin Name: Brro FX
  * Plugin URI:  https://brro.nl/plugins/brro-fx
  * Description: Lightweight class-based motion effects for custom WordPress themes. Uses Vanilla JS, Intersection Observer, and CSS custom properties — no dependencies required. Standalone class reference and demo: ref/demo.html (or open demo.html in the plugin folder for a redirect).
- * Version:     1.0.2
+ * Version:     1.1.0
  * Author:      Ronald Postma (Brro) & Claude (Anthropic)
  * Author URI:  https://brro.nl
  * Text Domain: brro-fx
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'BRRO_FX_VERSION', '1.0.0' );
+define( 'BRRO_FX_VERSION', '1.1.0' );
 
 add_action( 'wp_enqueue_scripts', function () {
 	$base = plugin_dir_url( __FILE__ );

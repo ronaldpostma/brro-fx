@@ -1,6 +1,6 @@
 /* =============================================================================
    Brro FX — Motion Effects CSS
-   Version: 1.0.0
+   Version: 1.1.0
    Author:  Ronald Postma (Brro) & Claude (Anthropic)
    License: GPL-2.0-or-later
    =============================================================================
@@ -14,6 +14,19 @@
      --brro-opacity      (fade)
    A single shared rule combines them all, so multiple effects on one element
    compose automatically without specificity conflicts.
+
+   PER-EFFECT PARAMETERS (v1.1.0+)
+   Each effect can take its own direction / start / end / speed via scoped
+   classes handled entirely in brro-fx.js:
+     brro-fx--{vertical|horizontal|fade|blur|rotate}-direction-*
+     brro-fx--{vertical|horizontal|fade|blur|rotate}-start-{0-100}
+     brro-fx--{vertical|horizontal|fade|blur|rotate}-end-{0-100}
+     brro-fx--{vertical|horizontal|blur|rotate}-speed-{1-10}
+   Fade uses in/out: brro-fx--fade-direction-in (default) / -out.
+   Scoped classes override the legacy globals (brro-fx--start-*, etc.) per
+   effect; globals remain as fallbacks. No CSS rule changes needed for this —
+   the same custom properties above keep driving the shared transform/filter/
+   opacity rule.
    ============================================================================= */
 
 

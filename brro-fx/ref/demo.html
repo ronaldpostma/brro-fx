@@ -334,7 +334,7 @@
   ════════════════════════════════════════════════════════ -->
   <section class="hero brro-fx--fade-in">
     <div class="container">
-      <p class="hero-eyebrow">Brro FX v1.0.0</p>
+      <p class="hero-eyebrow">Brro FX v1.1.0</p>
       <h1>Motion effects<br>via <span>CSS classes.</span></h1>
       <p>
         A lightweight WordPress plugin delivering Elementor-style scroll effects with
@@ -534,6 +534,51 @@
             <br>
             <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--rotate<br>brro-fx--speed-8</code>
             <br><small style="color:#4a4a5a;font-size:.7rem;">large range (±80°)</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       PER-EFFECT PARAMETERS
+  ════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">Per-Effect Parameters</span>
+      <h2>Different parameters per effect</h2>
+      <p>
+        Each effect can take its own <code>direction</code>, <code>start</code>, <code>end</code> and <code>speed</code>
+        via namespaced classes: <code>brro-fx--{effect}-{param}-*</code>.
+        Scoped classes win over the legacy globals (<code>brro-fx--start-*</code>, <code>brro-fx--speed-*</code>, etc.),
+        which still work as fallbacks. Fade uses <code>brro-fx--fade-direction-in</code> (default) / <code>-out</code>
+        instead of up/down for clarity.
+      </p>
+
+      <div class="scroll-well">
+        <div class="scroll-well-inner">
+
+          <div style="text-align:center;">
+            <div class="shape brro-fx--vertical-scroll brro-fx--vertical-direction-up brro-fx--vertical-start-20 brro-fx--vertical-end-60 brro-fx--fade brro-fx--fade-direction-out"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--vertical-scroll<br>brro-fx--vertical-direction-up<br>brro-fx--vertical-start-20<br>brro-fx--vertical-end-60<br>brro-fx--fade<br>brro-fx--fade-direction-out</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">vertical-up 20-60, fade out default window</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape-circle brro-fx--vertical-scroll brro-fx--vertical-speed-3 brro-fx--rotate brro-fx--rotate-speed-8"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--vertical-scroll<br>brro-fx--vertical-speed-3<br>brro-fx--rotate<br>brro-fx--rotate-speed-8</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">slow parallax + strong rotation</small>
+          </div>
+
+          <div style="text-align:center;">
+            <div class="shape-pill brro-fx--horizontal-scroll brro-fx--horizontal-direction-right brro-fx--horizontal-speed-7 brro-fx--fade brro-fx--fade-direction-in brro-fx--fade-start-40"></div>
+            <br>
+            <code style="font-size:.65rem;color:#a5b4fc;background:#0a0a10;border:1px solid #2a2a38;border-radius:6px;padding:.2em .5em;font-family:monospace;">brro-fx--horizontal-scroll<br>brro-fx--horizontal-direction-right<br>brro-fx--horizontal-speed-7<br>brro-fx--fade<br>brro-fx--fade-direction-in<br>brro-fx--fade-start-40</code>
+            <br><small style="color:#4a4a5a;font-size:.7rem;">right-drift, delayed fade-in</small>
           </div>
 
         </div>
@@ -846,6 +891,55 @@
         </tbody>
       </table>
 
+      <h3>Per-Effect Modifiers (v1.1.0+)</h3>
+      <p style="margin-top:.5rem;">
+        Scoped variants of the global <code>direction</code>, <code>start</code>, <code>end</code> and <code>speed</code> classes.
+        Each effect uses its own scoped class first; if none is present, the corresponding <em>global</em> class is used,
+        otherwise the default applies. <strong>Scoped &gt; global &gt; default.</strong>
+        Fade is renamed for clarity: <code>brro-fx--fade-direction-in</code> (default) / <code>-out</code> (replaces the global <code>direction-down</code> meaning for fade).
+      </p>
+      <table>
+        <thead>
+          <tr><th>Effect</th><th>Direction</th><th>Start / End</th><th>Speed</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>brro-fx--vertical-scroll</code></td>
+            <td><code>brro-fx--vertical-direction-up</code> (default) / <code>-down</code></td>
+            <td><code>brro-fx--vertical-start-{0–100}</code> / <code>-end-{0–100}</code></td>
+            <td><code>brro-fx--vertical-speed-{1–10}</code></td>
+          </tr>
+          <tr>
+            <td><code>brro-fx--horizontal-scroll</code></td>
+            <td><code>brro-fx--horizontal-direction-left</code> (default) / <code>-right</code></td>
+            <td><code>brro-fx--horizontal-start-{0–100}</code> / <code>-end-{0–100}</code></td>
+            <td><code>brro-fx--horizontal-speed-{1–10}</code></td>
+          </tr>
+          <tr>
+            <td><code>brro-fx--fade</code></td>
+            <td><code>brro-fx--fade-direction-in</code> (default) / <code>-out</code></td>
+            <td><code>brro-fx--fade-start-{0–100}</code> / <code>-end-{0–100}</code></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>brro-fx--blur</code></td>
+            <td>—</td>
+            <td><code>brro-fx--blur-start-{0–100}</code> / <code>-end-{0–100}</code></td>
+            <td><code>brro-fx--blur-speed-{1–10}</code></td>
+          </tr>
+          <tr>
+            <td><code>brro-fx--rotate</code></td>
+            <td><code>brro-fx--rotate-direction-right</code> (default, CW) / <code>-left</code> (CCW)</td>
+            <td><code>brro-fx--rotate-start-{0–100}</code> / <code>-end-{0–100}</code></td>
+            <td><code>brro-fx--rotate-speed-{1–10}</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.5rem;font-size:.8rem;color:#9898a8;">
+        Note: <code>--brro-progress</code> still reflects the <em>global</em> <code>brro-fx--start-*</code>/<code>-end-*</code> window (unchanged for backward compatibility).
+        Each effect internally uses its own clamped progress from the same raw scroll position.
+      </p>
+
       <h3>Smooth Scroll</h3>
       <table>
         <thead>
@@ -1002,14 +1096,25 @@
       </table>
 
       <h3>Stacking Example</h3>
-      <p style="margin-top:1rem;">Any number of scroll effects can be combined on one element:</p>
+      <p style="margin-top:1rem;">Any number of scroll effects can be combined on one element. With <strong>global</strong> classes, a single window drives all effects:</p>
       <pre style="background:#0a0a10;border:1px solid #22223a;border-radius:8px;padding:1.25rem;font-size:.82rem;color:#a5b4fc;font-family:monospace;overflow-x:auto;margin-top:.5rem;">&lt;div class="brro-fx--vertical-scroll
              brro-fx--fade
              brro-fx--blur
              brro-fx--speed-4
              brro-fx--start-10
              brro-fx--end-80"&gt;
-  All three effects, restricted to the 10%–80% progress window.
+  All three effects share the same 10%–80% progress window.
+&lt;/div&gt;</pre>
+
+      <p style="margin-top:1.5rem;">With <strong>per-effect</strong> classes, each effect has its own direction / window / speed:</p>
+      <pre style="background:#0a0a10;border:1px solid #22223a;border-radius:8px;padding:1.25rem;font-size:.82rem;color:#a5b4fc;font-family:monospace;overflow-x:auto;margin-top:.5rem;">&lt;div class="brro-fx--vertical-scroll
+             brro-fx--vertical-direction-up
+             brro-fx--vertical-start-20
+             brro-fx--vertical-end-60
+             brro-fx--fade
+             brro-fx--fade-direction-out"&gt;
+  Vertical drifts up only from 20%–60% of the journey;
+  fade runs its default 0%–100% window and fades out.
 &lt;/div&gt;</pre>
     </div>
   </section>

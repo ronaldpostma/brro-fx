@@ -1,10 +1,18 @@
 /**
  * Brro FX — Motion Effects Engine
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author:  Ronald Postma (Brro) & Claude (Anthropic)
  * License: GPL-2.0-or-later
  *
  * Add brro-fx-- classes to any element to apply effects. No config needed.
+ *
+ * Per-effect modifiers (v1.1.0):
+ *   brro-fx--{vertical|horizontal|fade|blur|rotate}-direction-*
+ *   brro-fx--{vertical|horizontal|fade|blur|rotate}-start-{0-100}
+ *   brro-fx--{vertical|horizontal|fade|blur|rotate}-end-{0-100}
+ *   brro-fx--{vertical|horizontal|blur|rotate}-speed-{1-10}
+ * Scoped classes override the legacy global classes (brro-fx--start-*, etc.)
+ * per effect; globals remain as fallbacks so existing sites keep working.
  */
 (function () {
   'use strict';
@@ -73,58 +81,118 @@
     return null;
   }
 
+  // ─── Per-effect helpers ───────────────────────────────────────────────────
+  // Resolution rule: per-effect scoped class wins, else legacy global, else default.
+
+  function parseIntSuffixScoped(el, scope, key) {
+    return parseIntSuffix(el, 'brro-fx--' + scope + '-' + key + '-');
+  }
+
+  function getStartPctFor(el, scope) {
+    var v = parseIntSuffixScoped(el, scope, 'start');
+    return v !== null ? v : getStartPct(el);
+  }
+
+  function getEndPctFor(el, scope) {
+    var v = parseIntSuffixScoped(el, scope, 'end');
+    return v !== null ? v : getEndPct(el);
+  }
+
+  function getSpeedFor(el, scope) {
+    var v = parseIntSuffixScoped(el, scope, 'speed');
+    return v !== null ? v : getSpeed(el);
+  }
+
+  function getVerticalDir(el) {
+    if (el.classList.contains('brro-fx--vertical-direction-down')) return 'down';
+    if (el.classList.contains('brro-fx--vertical-direction-up'))   return 'up';
+    return getDirection(el) === 'down' ? 'down' : 'up';
+  }
+
+  function getHorizontalDir(el) {
+    if (el.classList.contains('brro-fx--horizontal-direction-right')) return 'right';
+    if (el.classList.contains('brro-fx--horizontal-direction-left'))  return 'left';
+    return getDirection(el) === 'right' ? 'right' : 'left';
+  }
+
+  function getFadeDir(el) {
+    if (el.classList.contains('brro-fx--fade-direction-out')) return 'out';
+    if (el.classList.contains('brro-fx--fade-direction-in'))  return 'in';
+    return getDirection(el) === 'down' ? 'out' : 'in';
+  }
+
+  function getRotateDir(el) {
+    if (el.classList.contains('brro-fx--rotate-direction-left'))  return 'left';
+    if (el.classList.contains('brro-fx--rotate-direction-right')) return 'right';
+    return getDirection(el) === 'left' ? 'left' : 'right';
+  }
+
   // ─── Per-element update ────────────────────────────────────────────────────
 
   function updateElement(el) {
     if (isDisabled(el)) return;
 
-    var raw      = getRawProgress(el);
-    var progress = clampProgress(raw, getStartPct(el), getEndPct(el));
-    var speed    = getSpeed(el);
-    var dir      = getDirection(el);
+    var raw = getRawProgress(el);
 
-    el.style.setProperty('--brro-progress', progress.toFixed(4));
+    // --brro-progress keeps its legacy meaning: remapped by the GLOBAL
+    // brro-fx--start-*/brro-fx--end-* so existing custom CSS using this
+    // variable does not change behavior.
+    var progressGlobal = clampProgress(raw, getStartPct(el), getEndPct(el));
+    el.style.setProperty('--brro-progress', progressGlobal.toFixed(4));
 
     // Vertical parallax
     // speed 5 → ±100 px range (element offset at 0%: +100px, at 100%: -100px)
     if (el.classList.contains('brro-fx--vertical-scroll')) {
-      var rangeV  = speed * 20;
-      var offsetV = (progress - 0.5) * rangeV * 2;
-      var signV   = dir === 'down' ? 1 : -1;
+      var progressV = clampProgress(raw, getStartPctFor(el, 'vertical'), getEndPctFor(el, 'vertical'));
+      var speedV    = getSpeedFor(el, 'vertical');
+      var dirV      = getVerticalDir(el);
+      var rangeV    = speedV * 20;
+      var offsetV   = (progressV - 0.5) * rangeV * 2;
+      var signV     = dirV === 'down' ? 1 : -1;
       el.style.setProperty('--brro-translate-y', (offsetV * signV).toFixed(2) + 'px');
     }
 
     // Horizontal parallax
     if (el.classList.contains('brro-fx--horizontal-scroll')) {
-      var rangeH  = speed * 20;
-      var offsetH = (progress - 0.5) * rangeH * 2;
-      var signH   = dir === 'right' ? 1 : -1;
+      var progressH = clampProgress(raw, getStartPctFor(el, 'horizontal'), getEndPctFor(el, 'horizontal'));
+      var speedH    = getSpeedFor(el, 'horizontal');
+      var dirH      = getHorizontalDir(el);
+      var rangeH    = speedH * 20;
+      var offsetH   = (progressH - 0.5) * rangeH * 2;
+      var signH     = dirH === 'right' ? 1 : -1;
       el.style.setProperty('--brro-translate-x', (offsetH * signH).toFixed(2) + 'px');
     }
 
     // Opacity mapping
-    // Default: fades in (0→1) as element traverses viewport bottom→top.
-    // direction-down: fades out (1→0).
+    // Default (in): fades in (0→1) as element traverses viewport bottom→top.
+    // out: fades out (1→0).
     if (el.classList.contains('brro-fx--fade')) {
-      var opacity = dir === 'down' ? 1 - progress : progress;
+      var progressF = clampProgress(raw, getStartPctFor(el, 'fade'), getEndPctFor(el, 'fade'));
+      var dirF      = getFadeDir(el);
+      var opacity   = dirF === 'out' ? 1 - progressF : progressF;
       el.style.setProperty('--brro-opacity', Math.max(0, Math.min(1, opacity)).toFixed(4));
     }
 
     // Blur mapping — max blur at entry, clears as element rises through viewport
     // speed 5 → 10 px max blur
     if (el.classList.contains('brro-fx--blur')) {
-      var maxBlur = speed * 2;
-      el.style.setProperty('--brro-blur', Math.max(0, (1 - progress) * maxBlur).toFixed(2) + 'px');
+      var progressB = clampProgress(raw, getStartPctFor(el, 'blur'), getEndPctFor(el, 'blur'));
+      var speedB    = getSpeedFor(el, 'blur');
+      var maxBlur   = speedB * 2;
+      el.style.setProperty('--brro-blur', Math.max(0, (1 - progressB) * maxBlur).toFixed(2) + 'px');
     }
 
     // Rotation mapping
     // progress 0.5 (element centre in viewport) → 0 deg.
     // speed 5 → ±50 deg range total.
-    // direction-left: inverts rotation direction.
+    // rotate-direction-left: inverts rotation direction (CCW).
     if (el.classList.contains('brro-fx--rotate')) {
-      var maxDeg = speed * 10;
-      var signR  = dir === 'left' ? -1 : 1;
-      var deg    = (progress - 0.5) * maxDeg * 2 * signR;
+      var progressR = clampProgress(raw, getStartPctFor(el, 'rotate'), getEndPctFor(el, 'rotate'));
+      var speedR    = getSpeedFor(el, 'rotate');
+      var dirR      = getRotateDir(el);
+      var maxDeg    = speedR * 10;
+      var signR     = dirR === 'left' ? -1 : 1;
+      var deg       = (progressR - 0.5) * maxDeg * 2 * signR;
       el.style.setProperty('--brro-rotate', deg.toFixed(2) + 'deg');
     }
   }

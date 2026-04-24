@@ -11,8 +11,9 @@
 |-----|-------|
 | `plugin_slug` | `brro-fx` |
 | `text_domain` | `brro-fx` |
-| `version_header` | 1.0.1 (from plugin header) |
-| `version_constant` | `BRRO_FX_VERSION` 1.0.0 in `brro-fx.php` (may drift from header) |
+| `version_header` | 1.1.0 (from plugin header) |
+| `version_constant` | `BRRO_FX_VERSION` in `brro-fx.php` |
+| `engine_version` | 1.1.0 (from `assets/js/brro-fx.js`) |
 | `class_prefix` | `brro-fx--` (double hyphen) |
 | `engine_injected_state_class` | `brro-fx--is-visible` (entrance only; do not add manually in HTML) |
 
@@ -35,14 +36,16 @@
    - JS computes progress (viewport-based or full-page) and sets inline **CSS custom properties** on the element.  
    - A shared CSS rule uses one `transform`, `filter`, and `opacity` combining all variables so **multiple scroll effects on one element stack without fighting**.
 
-2. **Entrance (one-shot):** `brro-fx--fade-in`, `brro-fx--fade-in-up`  
+2. **Per-effect modifiers (v1.1.0+):** each effect can have its own `direction`, `start`, `end`, and `speed` via scoped classes `brro-fx--{effect}-{param}-*`. Scoped classes **override** the legacy global classes per effect; globals remain as **fallbacks** so existing sites keep working unchanged. Precedence: **scoped > global > default**.
+
+3. **Entrance (one-shot):** `brro-fx--fade-in`, `brro-fx--fade-in-up`  
    - `IntersectionObserver` (threshold 0.1) adds `brro-fx--is-visible` once, then unobserves. **Does not re-run** when scrolling back.
 
-3. **Loop (CSS-only):** `brro-fx--heartbeat` + optional `brro-fx--duration-*` (numeric only, e.g. `brro-fx--duration-800` = 800 ms), `brro-fx--scale-*` — no scroll JS.
+4. **Loop (CSS-only):** `brro-fx--heartbeat` + optional `brro-fx--duration-*` (numeric only, e.g. `brro-fx--duration-800` = 800 ms), `brro-fx--scale-*` — no scroll JS.
 
-4. **Smooth scroll:** attribute on **`<html>`** — not a class: `brro-fx--smoothscroll="on"`. Initializes **Lenis**; skipped if `prefers-reduced-motion: reduce`.
+5. **Smooth scroll:** attribute on **`<html>`** — not a class: `brro-fx--smoothscroll="on"`. Initializes **Lenis**; skipped if `prefers-reduced-motion: reduce`.
 
-5. **Responsive off:** `brro-fx--mobile-off` / `brro-fx--tablet-off` — JS **skips updates** (no custom props applied) below breakpoint.
+6. **Responsive off:** `brro-fx--mobile-off` / `brro-fx--tablet-off` — JS **skips updates** (no custom props applied) below breakpoint.
 
 ---
 
@@ -52,7 +55,7 @@ Use this block for quick lookup, code generation, or validation.
 
 ```json
 {
-  "brro_fx_reference_version": 2,
+  "brro_fx_reference_version": 3,
   "categories": {
     "scroll_effects": {
       "description": "Require brro-fx.js; map scroll progress to CSS variables.",
@@ -69,8 +72,8 @@ Use this block for quick lookup, code generation, or validation.
         { "class": "brro-fx--page", "effect": "Progress from full page scroll 0-100% instead of element viewport position. Combine with any scroll effect." }
       ]
     },
-    "direction": {
-      "note": "At most one direction class per axis; see JS defaults below.",
+    "direction_global_legacy": {
+      "note": "Single shared direction for all effects on the element. Used only when no scoped per-effect direction class is present. Precedence: per-effect > global > default.",
       "classes": [
         { "class": "brro-fx--direction-up", "for": ["brro-fx--vertical-scroll"], "effect": "Default vertical parallax sign (up drift)." },
         { "class": "brro-fx--direction-down", "for": ["brro-fx--vertical-scroll", "brro-fx--fade"], "effect": "Invert vertical parallax; for fade, fade out 1 to 0." },
@@ -78,10 +81,51 @@ Use this block for quick lookup, code generation, or validation.
         { "class": "brro-fx--direction-right", "for": ["brro-fx--horizontal-scroll"], "effect": "Horizontal parallax to the right." }
       ]
     },
-    "numeric_modifiers_parsed_by_js": {
+    "numeric_modifiers_global_legacy": {
+      "note": "Used only when no scoped per-effect class is present. Precedence: per-effect > global > default.",
       "pattern_speed": { "class_pattern": "brro-fx--speed-N", "n_range": "1-10", "default": 5, "applies_to": "scroll_effects" },
       "pattern_start": { "class_pattern": "brro-fx--start-N", "n_range": "0-100", "default": 0 },
       "pattern_end": { "class_pattern": "brro-fx--end-N", "n_range": "0-100", "default": 100 }
+    },
+    "per_effect_modifiers": {
+      "precedence": "per-effect > global > default",
+      "scopes": {
+        "vertical": {
+          "base_class": "brro-fx--vertical-scroll",
+          "direction": { "classes": ["brro-fx--vertical-direction-up", "brro-fx--vertical-direction-down"], "default": "up" },
+          "start": { "class_pattern": "brro-fx--vertical-start-N", "n_range": "0-100", "default": 0 },
+          "end": { "class_pattern": "brro-fx--vertical-end-N", "n_range": "0-100", "default": 100 },
+          "speed": { "class_pattern": "brro-fx--vertical-speed-N", "n_range": "1-10", "default": 5 }
+        },
+        "horizontal": {
+          "base_class": "brro-fx--horizontal-scroll",
+          "direction": { "classes": ["brro-fx--horizontal-direction-left", "brro-fx--horizontal-direction-right"], "default": "left" },
+          "start": { "class_pattern": "brro-fx--horizontal-start-N", "n_range": "0-100", "default": 0 },
+          "end": { "class_pattern": "brro-fx--horizontal-end-N", "n_range": "0-100", "default": 100 },
+          "speed": { "class_pattern": "brro-fx--horizontal-speed-N", "n_range": "1-10", "default": 5 }
+        },
+        "fade": {
+          "base_class": "brro-fx--fade",
+          "direction": { "classes": ["brro-fx--fade-direction-in", "brro-fx--fade-direction-out"], "default": "in", "note": "Replaces up/down naming for fade. Global brro-fx--direction-down still maps to fade-out as fallback." },
+          "start": { "class_pattern": "brro-fx--fade-start-N", "n_range": "0-100", "default": 0 },
+          "end": { "class_pattern": "brro-fx--fade-end-N", "n_range": "0-100", "default": 100 },
+          "speed": null
+        },
+        "blur": {
+          "base_class": "brro-fx--blur",
+          "direction": null,
+          "start": { "class_pattern": "brro-fx--blur-start-N", "n_range": "0-100", "default": 0 },
+          "end": { "class_pattern": "brro-fx--blur-end-N", "n_range": "0-100", "default": 100 },
+          "speed": { "class_pattern": "brro-fx--blur-speed-N", "n_range": "1-10", "default": 5 }
+        },
+        "rotate": {
+          "base_class": "brro-fx--rotate",
+          "direction": { "classes": ["brro-fx--rotate-direction-right", "brro-fx--rotate-direction-left"], "default": "right", "note": "right = CW, left = CCW." },
+          "start": { "class_pattern": "brro-fx--rotate-start-N", "n_range": "0-100", "default": 0 },
+          "end": { "class_pattern": "brro-fx--rotate-end-N", "n_range": "0-100", "default": 100 },
+          "speed": { "class_pattern": "brro-fx--rotate-speed-N", "n_range": "1-10", "default": 5 }
+        }
+      }
     },
     "responsive": {
       "classes": [
@@ -124,7 +168,7 @@ Use this block for quick lookup, code generation, or validation.
   },
   "css_custom_properties": {
     "set_by_js_on_scroll_elements": {
-      "--brro-progress": "0-1 after start/end window",
+      "--brro-progress": "0-1 remapped by the GLOBAL brro-fx--start-*/brro-fx--end-* window (unchanged since v1.0; per-effect windows are internal only)",
       "--brro-translate-x": "px, horizontal parallax",
       "--brro-translate-y": "px, vertical parallax",
       "--brro-rotate": "deg",
@@ -143,6 +187,8 @@ Use this block for quick lookup, code generation, or validation.
 - **`brro-fx--page`:** `raw = scrollY / (document.body.scrollHeight - innerHeight)`.
 
 **Tuning window:** `brro-fx--start-{0-100}` and `brro-fx--end-{0-100}` remap raw progress to 0-1 between those percentages. If `end <= start`, progress stays 0.
+
+**`--brro-progress` semantics (v1.1.0):** `--brro-progress` still reflects the **global** `brro-fx--start-*` / `brro-fx--end-*` window, so theme CSS using this variable keeps working unchanged. Each effect internally computes its own clamped progress from the same raw position when scoped `brro-fx--{effect}-start/end-*` classes are present; those per-effect windows are **not** exposed as CSS variables in this release.
 
 **Speed (scroll effects only, integer 1-10, default 5):**
 
@@ -172,7 +218,9 @@ Use this block for quick lookup, code generation, or validation.
 | `brro-fx--blur` | Blur vs scroll (strong at entry, clears) |
 | `brro-fx--rotate` | Rotation vs scroll (0° at element centre) |
 
-### Modifiers (scroll)
+### Modifiers — global (legacy, shared by all effects on the element)
+
+Used only when no scoped per-effect class is present. Precedence: **per-effect > global > default.**
 
 | Class | Role |
 |-------|------|
@@ -186,6 +234,20 @@ Use this block for quick lookup, code generation, or validation.
 | `brro-fx--end-0` … `brro-fx--end-100` | When mapped effect completes (percent) |
 | `brro-fx--mobile-off` | No JS effect below 768px width |
 | `brro-fx--tablet-off` | No JS effect below 1024px width |
+
+### Modifiers — per-effect (v1.1.0+)
+
+Scoped equivalents of the globals above. Use `brro-fx--{effect}-{param}-N` to target a single effect.
+
+| Effect | Direction | Start / End | Speed |
+|--------|-----------|-------------|-------|
+| `brro-fx--vertical-scroll` | `brro-fx--vertical-direction-up` *(default)* / `-down` | `brro-fx--vertical-start-{0-100}` / `-end-{0-100}` | `brro-fx--vertical-speed-{1-10}` |
+| `brro-fx--horizontal-scroll` | `brro-fx--horizontal-direction-left` *(default)* / `-right` | `brro-fx--horizontal-start-{0-100}` / `-end-{0-100}` | `brro-fx--horizontal-speed-{1-10}` |
+| `brro-fx--fade` | `brro-fx--fade-direction-in` *(default)* / `-out` | `brro-fx--fade-start-{0-100}` / `-end-{0-100}` | — |
+| `brro-fx--blur` | — | `brro-fx--blur-start-{0-100}` / `-end-{0-100}` | `brro-fx--blur-speed-{1-10}` |
+| `brro-fx--rotate` | `brro-fx--rotate-direction-right` *(default, CW)* / `-left` *(CCW)* | `brro-fx--rotate-start-{0-100}` / `-end-{0-100}` | `brro-fx--rotate-speed-{1-10}` |
+
+Global fallbacks: if a scoped class is absent, the engine maps the existing global classes (`brro-fx--direction-*`, `brro-fx--start-*`, `brro-fx--end-*`, `brro-fx--speed-*`) to each effect exactly as before v1.1.0.
 
 ### Entrance (one-shot)
 
@@ -222,9 +284,35 @@ Use this block for quick lookup, code generation, or validation.
 
 ## Stacking example (multiple scroll effects)
 
+**Global classes** (all effects share one direction / window / speed):
+
 ```html
 <div class="brro-fx--vertical-scroll brro-fx--fade brro-fx--blur brro-fx--speed-4 brro-fx--start-10 brro-fx--end-80">
   Parallax + fade + blur within the 10%–80% progress window.
+</div>
+```
+
+**Per-effect classes (v1.1.0+)** — different direction and window per effect on one element:
+
+```html
+<div class="brro-fx--vertical-scroll
+            brro-fx--vertical-direction-up
+            brro-fx--vertical-start-20
+            brro-fx--vertical-end-60
+            brro-fx--fade
+            brro-fx--fade-direction-out">
+  Vertical drifts up only from 20%–60% of the journey;
+  fade uses its default 0%–100% window and fades out.
+</div>
+```
+
+You can freely mix per-effect and global classes; per-effect always wins for that effect:
+
+```html
+<div class="brro-fx--vertical-scroll brro-fx--horizontal-scroll
+            brro-fx--speed-6
+            brro-fx--horizontal-speed-3">
+  Vertical uses speed-6 (global); horizontal overrides to speed-3.
 </div>
 ```
 
