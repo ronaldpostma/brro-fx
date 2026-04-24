@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brro FX — Demo</title>
-  <link rel="stylesheet" href="assets/css/brro-fx.css">
+  <link rel="stylesheet" href="../assets/css/brro-fx.css">
   <style>
     /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -620,28 +620,30 @@
         Triggered once when the element enters the viewport (10% threshold).
         The <code>brro-fx--is-visible</code> class is added by the engine;
         the CSS transition does the rest. This triggers once per page load (it does not replay on scroll back up).
+        Two variants are available: <code>brro-fx--fade-in</code> (opacity only) and
+        <code>brro-fx--fade-in-up</code> (opacity + slide-up).
       </p>
 
       <div class="entrance-grid">
 
-        <div class="entrance-card brro-fx--fade-in-up">
+        <div class="entrance-card brro-fx--fade-in">
           <div class="shape"></div>
-          <p>brro-fx--fade-in-up</p>
+          <p>brro-fx--fade-in<br><small style="color:#4a4a5a;">opacity only</small></p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-100">
+        <div class="entrance-card brro-fx--fade-in-up">
           <div class="shape-circle"></div>
-          <p>with delay via class</p>
+          <p>brro-fx--fade-in-up<br><small style="color:#4a4a5a;">opacity + slide-up</small></p>
         </div>
 
         <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-200">
           <div class="shape-pill"></div>
-          <p>staggered entrance</p>
+          <p>with <code style="font-size:.7rem;">brro-fx--delay-200</code></p>
         </div>
 
-        <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-300">
+        <div class="entrance-card brro-fx--fade-in-up brro-fx--delay-400">
           <div class="shape"></div>
-          <p>staggered entrance</p>
+          <p>with <code style="font-size:.7rem;">brro-fx--delay-400</code></p>
         </div>
 
       </div>
@@ -781,9 +783,10 @@
           <tr>
             <td><code>&lt;html brro-fx--smoothscroll="on"&gt;</code></td>
             <td>
-              Enables lerp-based smooth scroll (easing factor 0.1) for wheel events.
-              Automatically skipped when <code>prefers-reduced-motion</code> is set.
-              Keyboard, scrollbar, and anchor-link scrolls pass through as native.
+              Enables smooth scrolling via <strong>Lenis 1.1.19</strong> (bundled and auto-loaded
+              as a dependency). Defaults: <code>duration: 1.2 s</code>, exponential easing,
+              <code>wheelMultiplier: 1</code>, <code>smoothTouch: false</code> (touch devices use
+              native scroll). Automatically skipped when <code>prefers-reduced-motion</code> is set.
             </td>
           </tr>
         </tbody>
@@ -806,8 +809,37 @@
           <tr><th>Class</th><th>Effect</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>brro-fx--fade-in</code></td><td>Fades in once when element enters viewport (10% threshold). Use CSS <code>transition-delay</code> for staggering.</td></tr>
-          <tr><td><code>brro-fx--fade-in-up</code></td><td>Fades + slides up once when element enters viewport (10% threshold). Use CSS <code>transition-delay</code> for staggering.</td></tr>
+          <tr><td><code>brro-fx--fade-in</code></td><td>Fades in (opacity 0 → 1) once when element enters viewport (10% threshold). Combine with <code>brro-fx--delay-*</code> for staggering.</td></tr>
+          <tr><td><code>brro-fx--fade-in-up</code></td><td>Fades + slides up (24 px) once when element enters viewport (10% threshold). Combine with <code>brro-fx--delay-*</code> for staggering.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Delay Utilities</h3>
+      <p style="margin-top:.5rem;">
+        Apply both <code>transition-delay</code> and <code>animation-delay</code>. Works with the
+        entrance animations (<code>fade-in</code>, <code>fade-in-up</code>) and the heartbeat loop.
+        Not applied to scroll-mapped effects (those are driven per-frame by JS).
+      </p>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Delay</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>brro-fx--delay-100</code></td><td>100 ms</td></tr>
+          <tr><td><code>brro-fx--delay-200</code></td><td>200 ms</td></tr>
+          <tr><td><code>brro-fx--delay-300</code></td><td>300 ms</td></tr>
+          <tr><td><code>brro-fx--delay-400</code></td><td>400 ms</td></tr>
+          <tr><td><code>brro-fx--delay-500</code></td><td>500 ms</td></tr>
+          <tr><td><code>brro-fx--delay-600</code></td><td>600 ms</td></tr>
+          <tr><td><code>brro-fx--delay-700</code></td><td>700 ms</td></tr>
+          <tr><td><code>brro-fx--delay-800</code></td><td>800 ms</td></tr>
+          <tr><td><code>brro-fx--delay-900</code></td><td>900 ms</td></tr>
+          <tr><td><code>brro-fx--delay-1000</code></td><td>1000 ms</td></tr>
+          <tr><td><code>brro-fx--delay-1100</code></td><td>1100 ms</td></tr>
+          <tr><td><code>brro-fx--delay-1200</code></td><td>1200 ms</td></tr>
+          <tr><td><code>brro-fx--delay-1300</code></td><td>1300 ms</td></tr>
+          <tr><td><code>brro-fx--delay-1400</code></td><td>1400 ms</td></tr>
+          <tr><td><code>brro-fx--delay-1500</code></td><td>1500 ms</td></tr>
         </tbody>
       </table>
 
@@ -855,8 +887,8 @@
 
   <div class="spacer"></div>
 
-  <script src="assets/js/lenis.min.js"></script>
-  <script src="assets/js/brro-fx.js"></script>
+  <script src="../assets/js/lenis.min.js"></script>
+  <script src="../assets/js/brro-fx.js"></script>
 
   <script>
     /* Demo-only: show --brro-progress value live for the page bar */
